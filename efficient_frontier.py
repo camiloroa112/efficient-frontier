@@ -331,7 +331,7 @@ def minimize_variance(stats: pd.DataFrame, df_covariance: pd.DataFrame):
     constraints = ({'type': 'eq', 'fun': lambda x: np.sum(x) - 1})
     
     # Defining min and max
-    bound = (0.0, 1.0)
+    bound = (0.1, 0.99)
 
     # Defining bound per the number of portfolios
     bounds = tuple(bound for asset in range(num_assets))
@@ -355,14 +355,14 @@ def efficient_frontier(urls: list, risk_free_rate: float):
 
     # Initializer and bounds
     initializer = len(df_final.columns) * [1. / len(df_final.columns)]
-    bounds = tuple((0, 1) for x in range(len(df_final.columns)))
+    bounds = tuple((0.01, 0.99) for x in range(len(df_final.columns)))
 
     # Optimization
     optimal_sharpe = minimize(minimize_sharpe, initializer, args = (expected_return, df_covariance), method = 'SLSQP', bounds = bounds, constraints = {'type': 'eq', 'fun': lambda x: np.sum(x) - 1})
     optimal_sharpe_weights = optimal_sharpe['x'].round(3)
 
     # Obtaining optimal portfolio stats
-    optimal_stats = portfolio_stats(optimal_sharpe_weights, expected_return, df_covariance)
+    optimal_stats = portfolio_stats(weights, expected_return, df_covariance)
 
     # Retrieving minimization of variance
     min_var = minimize_variance(stats, df_covariance_)
@@ -399,5 +399,5 @@ def efficient_frontier(urls: list, risk_free_rate: float):
     display(stats)
 
     # Optimal weights recommended on each portfolio
-    print("Optimal weights on each portfolio: ")
-    display(pd.DataFrame(list(zip([company.capitalize() for company in df_final.columns], optimal_sharpe_weights * 100)), columns = ['Companies', 'Weights'], index =  None))
+    print("Weights applied on each portfolio: ")
+    display(pd.DataFrame(list(zip([company.capitalize() for company in df_final.columns], [str(round(weights * 100, 2)) + '%' for weights in weights])), columns = ['Companies', 'Weights'], index =  None))
