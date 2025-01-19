@@ -1,6 +1,10 @@
+# Efficient Frontier
+
 Hello there and thank you for watching the Efficient Frontier Program, to continue with its review and functioning, please complete the following instructions.
 
 At this point, VS Code must be installed as well as Python and Jupyter extensions configured.
+
+### Installation
 
 1. Open a folder in your PC where the files will be saved, press right click and select Open in Terminal.
 
